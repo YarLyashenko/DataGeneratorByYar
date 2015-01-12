@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Users>
+    <User FullName="" Name="admin">
+        <userAvatarCache>-1</userAvatarCache>
+        <description/>
+        <email/>
+        <phone/>
+        <UserActive>true</UserActive>
+    </User>
+    <User FullName="" Name="guest">
+        <userAvatarCache>-1</userAvatarCache>
+        <description/>
+        <email>rest01@myd-vm04769.hpswlabs.adapps.hp.com</email>
+        <phone/>
+        <UserActive>true</UserActive>
+    </User>
+    <User FullName="" Name="sa">
+        <userAvatarCache>-1</userAvatarCache>
+        <description/>
+        <email>restadmin@myd-vm04769.hpswlabs.adapps.hp.com</email>
+        <phone/>
+        <UserActive>true</UserActive>
+    </User>
+</Users>

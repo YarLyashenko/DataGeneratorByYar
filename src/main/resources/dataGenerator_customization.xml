@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataGeneratorConfiguration>
+    <min_date>2000-01-01</min_date>
+    <max_date>2020-12-12</max_date>
+    <min_integer>0</min_integer>
+    <max_integer>2147483647</max_integer>
+    <localization language="English">
+        <language>English</language>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</characters_set>
+    </localization>
+    <localization language="German">
+        <language>German</language>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÉÖÜßäéöü</characters_set>
+    </localization>
+    <localization language="Russian">
+        <language>Russian</language>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?[\]^_`{|}~№АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя</characters_set>
+    </localization>
+    <project_user_list>dataGenerator_metadata/projectUsers.xml</project_user_list>
+    <project_lists>dataGenerator_metadata/projectLists.xml</project_lists>
+    <entities_config>
+        <entity>
+            <type>Defect</type>
+            <path>dataGenerator_metadata/DefectFields.xml</path>
+        </entity>
+     </entities_config>
+</DataGeneratorConfiguration>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Lists>
+    <List>
+        <Name>Versions</Name>
+        <Id>35</Id>
+        <LogicalName>hp.platform.versions</LogicalName>
+        <Items/>
+    </List>
+    <List>
+        <Name>Priority</Name>
+        <Id>260</Id>
+        <LogicalName>hp.qc.priority</LogicalName>
+        <Items>
+            <Item value="1-Low" logicalName="hp.qc.priority.low"/>
+            <Item value="2-Medium" logicalName="hp.qc.priority.medium"/>
+            <Item value="3-High" logicalName="hp.qc.priority.high"/>
+            <Item value="4-Very High" logicalName="hp.qc.priority.very-high"/>
+            <Item value="5-Urgent" logicalName="hp.qc.priority.urgent"/>
+        </Items>
+    </List>
+    <List>
+        <Name>All Projects</Name>
+        <Id>266</Id>
+        <LogicalName>hp.qc.all-projects</LogicalName>
+        <Items/>
+    </List>
+    <List>
+        <Name>YesNo</Name>
+        <Id>1</Id>
+        <LogicalName>hp.platform.yes-no</LogicalName>
+        <Items>
+            <Item value="N" logicalName="hp.platform.yes-no.no"/>
+            <Item value="Y" logicalName="hp.platform.yes-no.yes"/>
+        </Items>
+    </List>
+    <List>
+        <Name>Severity</Name>
+        <Id>287</Id>
+        <LogicalName>hp.qc.severity</LogicalName>
+        <Items>
+            <Item value="1-Low" logicalName="hp.qc.severity.low"/>
+            <Item value="2-Medium" logicalName="hp.qc.severity.medium"/>
+            <Item value="3-High" logicalName="hp.qc.severity.high"/>
+            <Item value="4-Very High" logicalName="hp.qc.severity.very-high"/>
+            <Item value="5-Urgent" logicalName="hp.qc.severity.urgent"/>
+        </Items>
+    </List>
+    <List>
+        <Name>Bug Status</Name>
+        <Id>222</Id>
+        <LogicalName>hp.qc.bug-status</LogicalName>
+        <Items>
+            <Item value="Closed" logicalName="hp.qc.bug-status.closed"/>
+            <Item value="Fixed" logicalName="hp.qc.bug-status.fixed"/>
+            <Item value="New" logicalName="hp.qc.bug-status.new"/>
+            <Item value="Open" logicalName="hp.qc.bug-status.open"/>
+            <Item value="Rejected" logicalName="hp.qc.bug-status.rejected"/>
+            <Item value="Reopen" logicalName="hp.qc.bug-status.reopen"/>
+        </Items>
+    </List>
+    <List>
+        <Name>New List</Name>
+        <Id>1001</Id>
+        <LogicalName>user.93fd4b24-38dd-4b03-b6e5-0c024f4f9c64</LogicalName>
+        <Items>
+            <Item value="New Item" logicalName="user.295da204-e7fa-4c1e-a171-b6e429fbc19d"/>
+            <Item value="New Item (2)" logicalName="user.3045e0c8-9442-4ecb-8854-d0c297ef0215">
+                <Item value="New Item" logicalName="user.a68a05d9-f44f-4ea6-8cd2-1b34bb640758">
+                    <Item value="New Item" logicalName="user.52ae85db-ca04-40ca-808e-1abe1398da6f"/>
+                    <Item value="New Item (2)" logicalName="user.14fa0a49-6b74-49dd-b86c-4ae492dc4404"/>
+                </Item>
+                <Item value="New Item (2)" logicalName="user.2204dbfe-1b10-4f92-8906-22d80c95d03f">
+                    <Item value="New Item" logicalName="user.8690afa2-f4a1-4b8d-8f7c-0ac1a6ca75cd"/>
+                    <Item value="New Item (2)" logicalName="user.ddd2f707-5a73-441d-bfe2-74aefe4290d3"/>
+                </Item>
+            </Item>
+            <Item value="New Item (3)" logicalName="user.1a9e2531-6cac-4da8-88dd-c2ecf0d2fa3a"/>
+        </Items>
+    </List>
+</Lists>
