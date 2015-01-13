@@ -32,34 +32,41 @@ public class DataGenerator  {
     }
 
 
-    public String generateStringInJsonFormatForRequiredOlnyFields(int quantityOfEntities, String entityName, String localizationLanguage) throws JSONException {
+    public String generateStringInJsonFormatForRequiredOlnyFields(int quantityOfEntities, String entityName, String localizationLanguage) {
         return generateStringInJsonFormat(quantityOfEntities, entityName, localizationLanguage, true);
     }
 
 
-
-    public String generateStringInJsonFormatForAllFields(int quantityOfEntities, String entityName, String localizationLanguage) throws JSONException {
+    public String generateStringInJsonFormatForAllFields(int quantityOfEntities, String entityName, String localizationLanguage) {
         return generateStringInJsonFormat(quantityOfEntities, entityName, localizationLanguage, false);
     }
 
 
-
-    private String generateStringInJsonFormat(int quantityOfEntities, String entityName, String localizationLanguage, boolean fillOnlyRequiredFields) throws JSONException {
+    private String generateStringInJsonFormat(int quantityOfEntities, String entityName, String localizationLanguage, boolean fillOnlyRequiredFields) {
         ArrayList<HashMap<String, Object>> listWithMapForJson = generateListWithMapOfFields(quantityOfEntities, entityName, localizationLanguage, fillOnlyRequiredFields);
         ArrayList<JSONObject> listJsonForEachOneEntity = new ArrayList<>();
         for (HashMap<String, Object> entityValuesMap : listWithMapForJson) {
             JSONObject generatedJsonForOneEntity = new JSONObject();
             for (String key : entityValuesMap.keySet()) {
-                generatedJsonForOneEntity.put(key, entityValuesMap.get(key));
+                try {
+                    generatedJsonForOneEntity.put(key, entityValuesMap.get(key));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             listJsonForEachOneEntity.add(generatedJsonForOneEntity);
         }
-        String output = "{ \"data\":[";
+
+        String output = "";
+
         for (JSONObject jsonObject : listJsonForEachOneEntity) {
             output = output + jsonObject.toString() + ",";
         }
         output = output.substring(0, output.length() - 1);
-        output = output + "],\"total-count\":" + listJsonForEachOneEntity.size() + "}";
+        if (quantityOfEntities > 1) {
+            output = "{ \"data\":[" + output + "]}";
+        }
+
         return output;
     }
 

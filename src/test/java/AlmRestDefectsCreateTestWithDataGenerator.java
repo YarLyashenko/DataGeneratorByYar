@@ -18,7 +18,7 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
 
 
     @Test
-    public void TestCreateOneDefectRussianFilledAllFields() throws Exception {
+    public void TestCreateOneDefectRussianFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
         Map<String, String> responsePost = restClient.sendRequest(
@@ -34,7 +34,7 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     }
 
     @Test
-    public void TestCreateOneDefectRussianFilledRequiredFields() throws Exception {
+    public void TestCreateOneDefectRussianFilledRequiredFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
         Map<String, String> responsePost = restClient.sendRequest(
@@ -50,7 +50,7 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     }
 
     @Test
-    public void TestCreateTenDefectsEnglishFilledAllFields() throws Exception {
+    public void TestCreateTenDefectsEnglishFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
         Map<String, String> responsePost = restClient.sendRequest(
@@ -66,7 +66,7 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     }
 
     @Test
-    public void TestCreateFiveDefectsGermanFilledAllFields() throws Exception {
+    public void TestCreateFiveDefectsGermanFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
         Map<String, String> responsePost = restClient.sendRequest(
@@ -82,7 +82,7 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     }
 
     @Test
-    public void TestCreateThreeDefectsGermanFilledRequiredFields() throws Exception {
+    public void TestCreateThreeDefectsGermanFilledRequiredFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
         Map<String, String> responsePost = restClient.sendRequest(
