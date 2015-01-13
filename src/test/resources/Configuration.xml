@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+    <Scheme>http</Scheme>
+    <Server>myd-vm01418.hpswlabs.adapps.hp.com</Server>
+    <Port>8080</Port>
+    <User>sa</User>
+    <Password></Password>
+    <Domain>REST_DOMAIN</Domain>
+    <Project>Proj_rest_test</Project>
+    <ReadOnlyUser>guest</ReadOnlyUser>
+
+</root>

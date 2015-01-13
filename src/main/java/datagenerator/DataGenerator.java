@@ -20,6 +20,7 @@ import java.util.*;
  */
 public class DataGenerator  {
 
+    public static final String DEFECT_ENTITY = "Defect";
     private HashMap<String, String> localizationCharSetsMap = new HashMap<>();
     private HashMap<String, Object> dataGeneratorConfigurationMap = new HashMap<>();
     private HashMap<String, ArrayList<HashMap<String, String>>> projectEntitiesMapsList = new HashMap<String, ArrayList<HashMap<String, String>>>();
@@ -102,7 +103,7 @@ public class DataGenerator  {
                     generatedEntityMap.put(fieldMap.get("Name"), getRandomStringFromLocalizedCharset(fieldMap.get("Size"), charSet));
                 } else if (fieldMap.get("Type").equals("Memo")) {
                     Random randomGenerator = new Random();
-                    String generatedString = "Field Type: " + fieldMap.get("Type") + ".\\n Field Name:" + fieldMap.get("Name") + ".\\n";
+                    String generatedString = "Localization Charset: " + localizationLanguage + ". Field Type: " + fieldMap.get("Type") + ".   Field Name: " + fieldMap.get("Name") + ". Charset: " + charSet + " .  ";
                     generatedString = generatedString + getRandomStringFromLocalizedCharset(String.valueOf((500 + randomGenerator.nextInt(10000))), charSet);
                     generatedEntityMap.put(fieldMap.get("Name"), generatedString);
                 } else if (fieldMap.get("Type").equals("Number")) {
