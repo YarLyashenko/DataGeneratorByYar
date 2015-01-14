@@ -132,35 +132,7 @@ public class DataGenerator implements EntityType, LocalizationLanguage {
                         generatedEntityMap.put(fieldMap.get("Name"), getRandomUser(userList));
                         break;
                 }
-//                if (fieldType.equals("String")) {
-//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomStringFromLocalizedCharset(Integer.parseInt(fieldMap.get("Size")), charSet));
-//                } else if (fieldType.equals("Memo")) {
-//                    Random randomGenerator = new Random();
-//                    String generatedString = "Localization Charset: " + localizationLanguage + ". Field Type: " + fieldType + ".   Field Name: " + fieldMap.get("Name") + ". Charset: " + charSet + " .  ";
-//                    generatedString = generatedString + getRandomStringFromLocalizedCharset((500 + randomGenerator.nextInt(10000)), charSet);
-//                    generatedEntityMap.put(fieldMap.get("Name"), generatedString);
-//                } else if (fieldType.equals("Number")) {
-//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomInteger(
-//                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("min_integer")),
-//                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("max_integer"))));
-//                } else if (fieldType.equals("Date")) {
-//                    generatedEntityMap.put(fieldMap.get("Name"), getStringWithRandomDate(
-//                            String.valueOf(dataGeneratorConfigurationMap.get("min_date")),
-//                            String.valueOf(dataGeneratorConfigurationMap.get("max_date"))));
 //
-//                } else if (fieldType.equals("LookupList")) {
-//                    boolean supportsMultivalue = Boolean.parseBoolean(fieldMap.get("SupportsMultivalue"));
-//                    ArrayList<String> generatedFieldValue = getValuesFromList(
-//                            projectListsMap.get(fieldMap.get("List-Id")), supportsMultivalue);
-//                    if (generatedFieldValue.size() > 1) {
-//                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue);
-//                    } else if (generatedFieldValue.size() == 1) {
-//                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue.get(0));
-//                    }
-//
-//                } else if (fieldType.equals("UsersList")) {
-//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomUser(userList));
-//                }
             }
             outputListWithMap.add(generatedEntityMap);
         }
