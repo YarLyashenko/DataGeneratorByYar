@@ -12,19 +12,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by ylyashenko on 1/14/2015.
+ * Created by Yaroslav Lyashenko on 1/14/2015.
  */
 public class ConfigurationReaderForDataGenerator {
 
-    private final String DATAGENERATOR_CUSTOMIZATION_XML = "dataGenerator_customization.xml";
+    public static final String DATAGENERATOR_CUSTOMIZATION_XML = "dataGenerator_customization.xml";
     private HashMap<String, String> localizationCharSetsMap = new HashMap<>();
     private HashMap<String, Object> dataGeneratorConfigurationMap = new HashMap<>();
     private HashMap<String, ArrayList<HashMap<String, String>>> projectEntitiesMapsList = new HashMap<String, ArrayList<HashMap<String, String>>>();
     private ArrayList<String> userList = new ArrayList<>();
     private HashMap<String, ArrayList<String>> projectListsMap = new HashMap<>();
 
-    public ConfigurationReaderForDataGenerator() {
-        readCustomizationXml(DATAGENERATOR_CUSTOMIZATION_XML);
+    public ConfigurationReaderForDataGenerator(String customizationXmlPath) {
+        readCustomizationXml(customizationXmlPath);
         readUserList();
         readProjectList();
         readEntityFields();

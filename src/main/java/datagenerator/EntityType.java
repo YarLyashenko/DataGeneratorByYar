@@ -1,7 +1,7 @@
 package datagenerator;
 
 /**
- * Created by ylyashenko on 1/14/2015.
+ * Created by Yaroslav Lyashenko on 1/14/2015.
  */
 public interface EntityType {
     public static final String DEFECT_ENTITY = "Defect";

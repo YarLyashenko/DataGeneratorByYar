@@ -1,5 +1,6 @@
 import Utils.AlmRestClient;
 import Utils.ConnectionProperties;
+import datagenerator.ConfigurationReaderForDataGenerator;
 import datagenerator.DataGenerator;
 import datagenerator.EntityType;
 import datagenerator.LocalizationLanguage;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 
 public class AlmRestDefectsCreateTestWithDataGenerator {
-    DataGenerator dataGenerator = new DataGenerator();
+    DataGenerator dataGenerator = new DataGenerator(new ConfigurationReaderForDataGenerator(ConfigurationReaderForDataGenerator.DATAGENERATOR_CUSTOMIZATION_XML));
 
     @BeforeClass
     public static void LoadProperties() {

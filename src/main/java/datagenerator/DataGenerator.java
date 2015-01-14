@@ -20,13 +20,12 @@ public class DataGenerator implements EntityType, LocalizationLanguage {
     private ArrayList<String> userList = new ArrayList<>();
     private HashMap<String, ArrayList<String>> projectListsMap;
 
-    public DataGenerator() {
-        ConfigurationReaderForDataGenerator configReader = new ConfigurationReaderForDataGenerator();
-        localizationCharSetsMap = configReader.getLocalizationCharSetsMap();
-        dataGeneratorConfigurationMap = configReader.getDataGeneratorConfigurationMap();
-        projectEntitiesMapsList = configReader.getProjectEntitiesMapsList();
-        userList = configReader.getUserList();
-        projectListsMap = configReader.getProjectListsMap();
+    public DataGenerator(ConfigurationReaderForDataGenerator config) {
+        localizationCharSetsMap = config.getLocalizationCharSetsMap();
+        dataGeneratorConfigurationMap = config.getDataGeneratorConfigurationMap();
+        projectEntitiesMapsList = config.getProjectEntitiesMapsList();
+        userList = config.getUserList();
+        projectListsMap = config.getProjectListsMap();
     }
 
     public String generateStringInJsonFormatForRequiredOlnyFields(int quantityOfEntities, String entityName, String localizationLanguage) {
