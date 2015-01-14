@@ -1,6 +1,8 @@
 import Utils.AlmRestClient;
 import Utils.ConnectionProperties;
 import datagenerator.DataGenerator;
+import datagenerator.EntityType;
+import datagenerator.LocalizationLanguage;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,13 +23,15 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     public void TestCreateOneDefectRussianFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
+        String generatedEntities = dataGenerator.generateStringInJsonFormatForAllFields(1, EntityType.DEFECT_ENTITY, LocalizationLanguage.RUSSIAN);
         Map<String, String> responsePost = restClient.sendRequest(
                 "defects",
                 "POST",
-                dataGenerator.generateStringInJsonFormatForAllFields(1, DataGenerator.DEFECT_ENTITY, "Russian"),
+                generatedEntities,
                 null);
         restClient.logout();
         String expectedOkStatusCode = "201";
+
         Assert.assertTrue("Status codes do not match. Expected is " + expectedOkStatusCode + ". Actual is " + responsePost.get("StatusCode"),
                 responsePost.get("StatusCode").equals(expectedOkStatusCode));
 
@@ -37,10 +41,11 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     public void TestCreateOneDefectRussianFilledRequiredFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
+        String generatedEntities = dataGenerator.generateStringInJsonFormatForRequiredOlnyFields(1, EntityType.DEFECT_ENTITY, LocalizationLanguage.RUSSIAN);
         Map<String, String> responsePost = restClient.sendRequest(
                 "defects",
                 "POST",
-                dataGenerator.generateStringInJsonFormatForRequiredOlnyFields(1, DataGenerator.DEFECT_ENTITY, "Russian"),
+                generatedEntities,
                 null);
         restClient.logout();
         String expectedOkStatusCode = "201";
@@ -53,10 +58,11 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     public void TestCreateTenDefectsEnglishFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
+        String generatedEntities = dataGenerator.generateStringInJsonFormatForAllFields(10, EntityType.DEFECT_ENTITY, LocalizationLanguage.ENGLISH);
         Map<String, String> responsePost = restClient.sendRequest(
                 "defects",
                 "POST",
-                dataGenerator.generateStringInJsonFormatForAllFields(10, DataGenerator.DEFECT_ENTITY, "English"),
+                generatedEntities,
                 null);
         restClient.logout();
         String expectedOkStatusCode = "201";
@@ -69,10 +75,11 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     public void TestCreateFiveDefectsGermanFilledAllFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
+        String generatedEntities = dataGenerator.generateStringInJsonFormatForAllFields(5, EntityType.DEFECT_ENTITY, LocalizationLanguage.GERMAN);
         Map<String, String> responsePost = restClient.sendRequest(
                 "defects",
                 "POST",
-                dataGenerator.generateStringInJsonFormatForAllFields(5, DataGenerator.DEFECT_ENTITY, "German"),
+                generatedEntities,
                 null);
         restClient.logout();
         String expectedOkStatusCode = "201";
@@ -85,10 +92,11 @@ public class AlmRestDefectsCreateTestWithDataGenerator {
     public void TestCreateThreeDefectsGermanFilledRequiredFields() {
         AlmRestClient restClient = new AlmRestClient();
         restClient.login();
+        String generatedEntities = dataGenerator.generateStringInJsonFormatForRequiredOlnyFields(3, EntityType.DEFECT_ENTITY, LocalizationLanguage.GERMAN);
         Map<String, String> responsePost = restClient.sendRequest(
                 "defects",
                 "POST",
-                dataGenerator.generateStringInJsonFormatForRequiredOlnyFields(3, DataGenerator.DEFECT_ENTITY, "German"),
+                generatedEntities,
                 null);
         restClient.logout();
         String expectedOkStatusCode = "201";

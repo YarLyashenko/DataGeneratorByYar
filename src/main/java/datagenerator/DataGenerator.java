@@ -1,73 +1,61 @@
 package datagenerator;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.codehaus.jackson.map.ObjectMapper;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-/**
- * Created by ylyashenko on 1/12/2015.
- */
-public class DataGenerator  {
 
-    public static final String DEFECT_ENTITY = "Defect";
-    private HashMap<String, String> localizationCharSetsMap = new HashMap<>();
-    private HashMap<String, Object> dataGeneratorConfigurationMap = new HashMap<>();
-    private HashMap<String, ArrayList<HashMap<String, String>>> projectEntitiesMapsList = new HashMap<String, ArrayList<HashMap<String, String>>>();
+/**
+ * Created by Yaroslav Lyashenko on 1/12/2015.
+ */
+public class DataGenerator implements EntityType, LocalizationLanguage {
+
+    private HashMap<String, String> localizationCharSetsMap;
+    private HashMap<String, Object> dataGeneratorConfigurationMap;
+    private HashMap<String, ArrayList<HashMap<String, String>>> projectEntitiesMapsList;
     private ArrayList<String> userList = new ArrayList<>();
-    private HashMap<String, ArrayList<String>> projectListsMap = new HashMap<>();
+    private HashMap<String, ArrayList<String>> projectListsMap;
 
     public DataGenerator() {
-        readConfiguration();
+        ConfigurationReaderForDataGenerator configReader = new ConfigurationReaderForDataGenerator();
+        localizationCharSetsMap = configReader.getLocalizationCharSetsMap();
+        dataGeneratorConfigurationMap = configReader.getDataGeneratorConfigurationMap();
+        projectEntitiesMapsList = configReader.getProjectEntitiesMapsList();
+        userList = configReader.getUserList();
+        projectListsMap = configReader.getProjectListsMap();
     }
-
 
     public String generateStringInJsonFormatForRequiredOlnyFields(int quantityOfEntities, String entityName, String localizationLanguage) {
         return generateStringInJsonFormat(quantityOfEntities, entityName, localizationLanguage, true);
     }
 
-
     public String generateStringInJsonFormatForAllFields(int quantityOfEntities, String entityName, String localizationLanguage) {
         return generateStringInJsonFormat(quantityOfEntities, entityName, localizationLanguage, false);
     }
 
-
     private String generateStringInJsonFormat(int quantityOfEntities, String entityName, String localizationLanguage, boolean fillOnlyRequiredFields) {
-        ArrayList<HashMap<String, Object>> listWithMapForJson = generateListWithMapOfFields(quantityOfEntities, entityName, localizationLanguage, fillOnlyRequiredFields);
-        ArrayList<JSONObject> listJsonForEachOneEntity = new ArrayList<>();
-        for (HashMap<String, Object> entityValuesMap : listWithMapForJson) {
-            JSONObject generatedJsonForOneEntity = new JSONObject();
-            for (String key : entityValuesMap.keySet()) {
-                try {
-                    generatedJsonForOneEntity.put(key, entityValuesMap.get(key));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        ArrayList<HashMap<String, Object>> listWithMapForJson =
+                generateListWithMapOfFields(quantityOfEntities, entityName, localizationLanguage, fillOnlyRequiredFields);
+        class Wrapper {
+            public Object data;
+        }
+        try {
+            String result;
+            if (quantityOfEntities == 1) {
+                result = new ObjectMapper().writeValueAsString(listWithMapForJson.get(0));
+            } else {
+                Wrapper wrapper = new Wrapper();
+                wrapper.data = listWithMapForJson;
+                result = new ObjectMapper().writeValueAsString(wrapper);
             }
-            listJsonForEachOneEntity.add(generatedJsonForOneEntity);
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        String output = "";
-
-        for (JSONObject jsonObject : listJsonForEachOneEntity) {
-            output = output + jsonObject.toString() + ",";
-        }
-        output = output.substring(0, output.length() - 1);
-        if (quantityOfEntities > 1) {
-            output = "{ \"data\":[" + output + "]}";
-        }
-
-        return output;
     }
 
 
@@ -81,300 +69,104 @@ public class DataGenerator  {
     }
 
 
-
     private ArrayList<HashMap<String, Object>> generateListWithMapOfFields(int quantityOfEntities, String entityName, String localizationLanguage, boolean fillOnlyRequiredFields) {
         ArrayList<HashMap<String, Object>> outputListWithMap = new ArrayList<>();
-        HashMap<String, String> localizationCharSetsMap = (HashMap<String, String>) dataGeneratorConfigurationMap.get("localizationCharSetsMap");
-        String charSet = localizationCharSetsMap.get(localizationLanguage);
-
-        if (projectEntitiesMapsList.containsKey(entityName) == false) {
-            return null;
+        if (localizationCharSetsMap.containsKey(localizationLanguage) == false) {
+            throw new RuntimeException("Wrong localization language. No charset has been found for request \'" + localizationLanguage + "\'. Check if requested language is present in dataGenerator_customization.xml");
         }
+        if (projectEntitiesMapsList.containsKey(entityName) == false) {
+            throw new RuntimeException("Wrong requested entity type. No entity type has been found for request \'" + entityName + "\'. Check if requested entity is present in dataGenerator_customization.xml ");
+        }
+        String charSet = localizationCharSetsMap.get(localizationLanguage);
         ArrayList<HashMap<String, String>> listWithFieldsMaps = projectEntitiesMapsList.get(entityName);
 
         for (int i = 0; i < quantityOfEntities; i++) {
             HashMap<String, Object> generatedEntityMap = new HashMap<>();
             for (HashMap<String, String> fieldMap : listWithFieldsMaps) {
-
                 if (fieldMap.get("Editable").equals("false")) {
-                    continue;
-                }
-                if (fieldMap.get("Name").equals("subject")) {
                     continue;
                 }
                 if (fieldMap.get("Required").equals("false") && fillOnlyRequiredFields) {
                     continue;
                 }
-
-                if (fieldMap.get("Type").equals("String")) {
-                    generatedEntityMap.put(fieldMap.get("Name"), getRandomStringFromLocalizedCharset(fieldMap.get("Size"), charSet));
-                } else if (fieldMap.get("Type").equals("Memo")) {
-                    Random randomGenerator = new Random();
-                    String generatedString = "Localization Charset: " + localizationLanguage + ". Field Type: " + fieldMap.get("Type") + ".   Field Name: " + fieldMap.get("Name") + ". Charset: " + charSet + " .  ";
-                    generatedString = generatedString + getRandomStringFromLocalizedCharset(String.valueOf((500 + randomGenerator.nextInt(10000))), charSet);
-                    generatedEntityMap.put(fieldMap.get("Name"), generatedString);
-                } else if (fieldMap.get("Type").equals("Number")) {
-                    generatedEntityMap.put(fieldMap.get("Name"), getRandomInteger(
-                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("min_integer")),
-                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("max_integer"))));
-                } else if (fieldMap.get("Type").equals("Date")) {
-                    generatedEntityMap.put(fieldMap.get("Name"), getStringWithRandomDate(
-                            String.valueOf(dataGeneratorConfigurationMap.get("min_date")),
-                            String.valueOf(dataGeneratorConfigurationMap.get("max_date"))));
-
-                } else if (fieldMap.get("Type").equals("LookupList")) {
-                    boolean supportsMultivalue = Boolean.parseBoolean(fieldMap.get("SupportsMultivalue"));
-                    ArrayList<String> generatedFieldValue = getValuesFromList(
-                            projectListsMap.get(fieldMap.get("List-Id")), supportsMultivalue);
-                    if (generatedFieldValue.size() > 1) {
-                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue);
-                    } else if (generatedFieldValue.size() == 1) {
-                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue.get(0));
-                    }
-
-                } else if (fieldMap.get("Type").equals("UsersList")) {
-                    generatedEntityMap.put(fieldMap.get("Name"), getRandomUser(userList));
+                if (entityName.equals(DEFECT_ENTITY) && fieldMap.get("Name").equals("subject")) {
+                    continue;
                 }
+
+                String fieldType = fieldMap.get("Type");
+                switch (fieldType) {
+                    case "String":
+                        generatedEntityMap.put(fieldMap.get("Name"), getRandomStringFromLocalizedCharset(Integer.parseInt(fieldMap.get("Size")), charSet));
+                        break;
+
+                    case "Memo":
+                        Random randomGenerator = new Random();
+                        String generatedString = "Localization Charset: " + localizationLanguage + ". Field Type: " + fieldType + ".   Field Name: " + fieldMap.get("Name") + ". Charset: " + charSet + " .  ";
+                        generatedString = generatedString + getRandomStringFromLocalizedCharset((500 + randomGenerator.nextInt(10000)), charSet);
+                        generatedEntityMap.put(fieldMap.get("Name"), generatedString);
+                        break;
+
+                    case "Number":
+                        generatedEntityMap.put(fieldMap.get("Name"), getRandomInteger(
+                                Integer.parseInt((String) dataGeneratorConfigurationMap.get("min_integer")),
+                                Integer.parseInt((String) dataGeneratorConfigurationMap.get("max_integer"))));
+                        break;
+                    case "Date":
+                        generatedEntityMap.put(fieldMap.get("Name"), getStringWithRandomDate(
+                                String.valueOf(dataGeneratorConfigurationMap.get("min_date")),
+                                String.valueOf(dataGeneratorConfigurationMap.get("max_date"))));
+                        break;
+
+                    case "LookupList":
+                        boolean supportsMultivalue = Boolean.parseBoolean(fieldMap.get("SupportsMultivalue"));
+                        ArrayList<String> generatedFieldValue = getValuesFromList(
+                                projectListsMap.get(fieldMap.get("List-Id")), supportsMultivalue);
+                        if (generatedFieldValue.size() > 1) {
+                            generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue);
+                        } else if (generatedFieldValue.size() == 1) {
+                            generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue.get(0));
+                        }
+                        break;
+
+                    case "UsersList":
+                        generatedEntityMap.put(fieldMap.get("Name"), getRandomUser(userList));
+                        break;
+                }
+//                if (fieldType.equals("String")) {
+//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomStringFromLocalizedCharset(Integer.parseInt(fieldMap.get("Size")), charSet));
+//                } else if (fieldType.equals("Memo")) {
+//                    Random randomGenerator = new Random();
+//                    String generatedString = "Localization Charset: " + localizationLanguage + ". Field Type: " + fieldType + ".   Field Name: " + fieldMap.get("Name") + ". Charset: " + charSet + " .  ";
+//                    generatedString = generatedString + getRandomStringFromLocalizedCharset((500 + randomGenerator.nextInt(10000)), charSet);
+//                    generatedEntityMap.put(fieldMap.get("Name"), generatedString);
+//                } else if (fieldType.equals("Number")) {
+//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomInteger(
+//                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("min_integer")),
+//                            Integer.parseInt((String) dataGeneratorConfigurationMap.get("max_integer"))));
+//                } else if (fieldType.equals("Date")) {
+//                    generatedEntityMap.put(fieldMap.get("Name"), getStringWithRandomDate(
+//                            String.valueOf(dataGeneratorConfigurationMap.get("min_date")),
+//                            String.valueOf(dataGeneratorConfigurationMap.get("max_date"))));
+//
+//                } else if (fieldType.equals("LookupList")) {
+//                    boolean supportsMultivalue = Boolean.parseBoolean(fieldMap.get("SupportsMultivalue"));
+//                    ArrayList<String> generatedFieldValue = getValuesFromList(
+//                            projectListsMap.get(fieldMap.get("List-Id")), supportsMultivalue);
+//                    if (generatedFieldValue.size() > 1) {
+//                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue);
+//                    } else if (generatedFieldValue.size() == 1) {
+//                        generatedEntityMap.put(fieldMap.get("Name"), generatedFieldValue.get(0));
+//                    }
+//
+//                } else if (fieldType.equals("UsersList")) {
+//                    generatedEntityMap.put(fieldMap.get("Name"), getRandomUser(userList));
+//                }
             }
             outputListWithMap.add(generatedEntityMap);
         }
         return outputListWithMap;
     }
 
-
-    private void readConfiguration() {
-        readCustomizationXml("dataGenerator_customization.xml");
-        readUserList();
-        readProjectList();
-        readEntityFields();
-    }
-
-
-    private void readCustomizationXml(String xmlPath) {
-        HashMap<String, String> entitiesConfigurationFilesPathMap = new HashMap<>();
-
-        try {
-            ClassLoader classLoader = DataGenerator.class.getClassLoader();
-            File file = new File(classLoader.getResource(xmlPath).getFile());
-
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(file);
-            doc.getDocumentElement().normalize();
-
-            NodeList nodeList = doc.getElementsByTagName("min_date");
-            dataGeneratorConfigurationMap.put("min_date", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("max_date");
-            dataGeneratorConfigurationMap.put("max_date", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("min_integer");
-            dataGeneratorConfigurationMap.put("min_integer", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("max_integer");
-            dataGeneratorConfigurationMap.put("max_integer", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("project_user_list");
-            dataGeneratorConfigurationMap.put("project_user_list", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("project_lists");
-            dataGeneratorConfigurationMap.put("project_lists", ((Node) nodeList.item(0)).getTextContent());
-
-            nodeList = doc.getElementsByTagName("localization");
-            for (int s = 0; s < nodeList.getLength(); s++) {
-                Node node = nodeList.item(s);
-
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    String language = "";
-                    String charSet = "";
-
-                    NodeList elementsList = element.getElementsByTagName("language");
-                    Element firstElement = (Element) elementsList.item(0);
-                    NodeList firstElementNodes = firstElement.getChildNodes();
-                    language = firstElementNodes.item(0).getNodeValue();
-
-                    elementsList = element.getElementsByTagName("characters_set");
-                    firstElement = (Element) elementsList.item(0);
-                    firstElementNodes = firstElement.getChildNodes();
-                    charSet = firstElementNodes.item(0).getNodeValue();
-
-                    localizationCharSetsMap.put(language, charSet);
-                }
-            }
-
-            nodeList = doc.getElementsByTagName("entity");
-            for (int s = 0; s < nodeList.getLength(); s++) {
-                Node node = nodeList.item(s);
-
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    String entityType = "";
-                    String entityXmlPath = "";
-
-                    NodeList elementsList = element.getElementsByTagName("type");
-                    Element firstElement = (Element) elementsList.item(0);
-                    NodeList firstElementNodes = firstElement.getChildNodes();
-                    entityType = firstElementNodes.item(0).getNodeValue();
-
-                    elementsList = element.getElementsByTagName("path");
-                    firstElement = (Element) elementsList.item(0);
-                    firstElementNodes = firstElement.getChildNodes();
-                    entityXmlPath = firstElementNodes.item(0).getNodeValue();
-
-                    entitiesConfigurationFilesPathMap.put(entityType, entityXmlPath);
-                }
-            }
-            dataGeneratorConfigurationMap.put("entitiesConfigurationFilesPathMap", entitiesConfigurationFilesPathMap);
-            dataGeneratorConfigurationMap.put("localizationCharSetsMap", localizationCharSetsMap);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readUserList() {
-        String projectUsersXmlPath = dataGeneratorConfigurationMap.get("project_user_list").toString();
-
-        try {
-            ClassLoader classLoader = DataGenerator.class.getClassLoader();
-            File file = new File(classLoader.getResource(projectUsersXmlPath).getFile());
-
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(file);
-            doc.getDocumentElement().normalize();
-
-            NodeList nodeList = doc.getElementsByTagName("User");
-            for (int s = 0; s < nodeList.getLength(); s++) {
-                Node node = nodeList.item(s);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    userList.add(element.getAttribute("Name"));
-                }
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        dataGeneratorConfigurationMap.put("userList", userList);
-    }
-
-    private void readProjectList() {
-        String projectListXmlPath = dataGeneratorConfigurationMap.get("project_lists").toString();
-        try {
-            ClassLoader classLoader = DataGenerator.class.getClassLoader();
-            File file = new File(classLoader.getResource(projectListXmlPath).getFile());
-
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(file);
-            doc.getDocumentElement().normalize();
-
-            NodeList nodeList = doc.getElementsByTagName("List");
-            for (int s = 0; s < nodeList.getLength(); s++) {
-
-                ArrayList<String> listItems = new ArrayList<>();
-                String listId = "";
-                Node node = nodeList.item(s);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    NodeList elementsList = element.getElementsByTagName("Id");
-                    Element firstElement = (Element) elementsList.item(0);
-                    NodeList firstElementNodes = firstElement.getChildNodes();
-                    listId = firstElementNodes.item(0).getNodeValue();
-
-
-                    NodeList itemsList = element.getElementsByTagName("Item");
-                    for (int i = 0; i < itemsList.getLength(); i++) {
-                        Node itemNode = itemsList.item(i);
-                        if (itemNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element item = (Element) itemNode;
-                            listItems.add(item.getAttribute("value"));
-                        }
-
-                    }
-                }
-                projectListsMap.put(listId, listItems);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        dataGeneratorConfigurationMap.put("userList", userList);
-    }
-
-    private void readEntityFields() {
-        HashMap<String, String> entitiesConfigurationFilesPathMap = (HashMap<String, String>) dataGeneratorConfigurationMap.get("entitiesConfigurationFilesPathMap");
-        for (String key : entitiesConfigurationFilesPathMap.keySet()) {
-            ArrayList<HashMap<String, String>> entityFieldsMapsList = new ArrayList<>();
-            String entityXmlPath = entitiesConfigurationFilesPathMap.get(key).toString();
-            try {
-                ClassLoader classLoader = DataGenerator.class.getClassLoader();
-                File file = new File(classLoader.getResource(entityXmlPath).getFile());
-
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                Document doc = db.parse(file);
-                doc.getDocumentElement().normalize();
-
-                NodeList nodeList = doc.getElementsByTagName("Field");
-                for (int s = 0; s < nodeList.getLength(); s++) {
-                    HashMap<String, String> entityFieldsMap = new HashMap<>();
-                    Node node = nodeList.item(s);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        entityFieldsMap.put("Name", element.getAttribute("Name"));
-                        entityFieldsMap.put("Label", element.getAttribute("Label"));
-                        entityFieldsMap.put("PhysicalName", element.getAttribute("PhysicalName"));
-
-                        NodeList elementsList = element.getElementsByTagName("Size");
-                        Element firstElement = (Element) elementsList.item(0);
-                        NodeList firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("Size", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("Required");
-                        firstElement = (Element) elementsList.item(0);
-                        firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("Required", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("System");
-                        firstElement = (Element) elementsList.item(0);
-                        firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("System", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("Editable");
-                        firstElement = (Element) elementsList.item(0);
-                        firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("Editable", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("Type");
-                        firstElement = (Element) elementsList.item(0);
-                        firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("Type", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("SupportsMultivalue");
-                        firstElement = (Element) elementsList.item(0);
-                        firstElementNodes = firstElement.getChildNodes();
-                        entityFieldsMap.put("SupportsMultivalue", firstElementNodes.item(0).getNodeValue());
-
-                        elementsList = element.getElementsByTagName("List-Id");
-                        if (elementsList.getLength() > 0) {
-                            firstElement = (Element) elementsList.item(0);
-                            firstElementNodes = firstElement.getChildNodes();
-                            entityFieldsMap.put("List-Id", firstElementNodes.item(0).getNodeValue());
-                        }
-                        entityFieldsMapsList.add(entityFieldsMap);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            projectEntitiesMapsList.put(key, entityFieldsMapsList);
-        }
-        dataGeneratorConfigurationMap.put("projectEntitiesMapsList", projectEntitiesMapsList);
-    }
 
     private String getStringWithRandomDate(String minDate, String maxDate) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -391,9 +183,9 @@ public class DataGenerator  {
             String output = format.format(calendar.getTime());
             return output;
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "";
+
     }
 
     private int getRandomInteger(int min, int max) {
@@ -406,7 +198,6 @@ public class DataGenerator  {
             return lookUpList;
         }
         Random randomGenerator = new Random();
-        ArrayList<String> output = new ArrayList<>();
         int amountOfReturnedListItems = 1;
         if (multivalue == true) {
             amountOfReturnedListItems = 2 + randomGenerator.nextInt(lookUpList.size() - 2);
@@ -420,21 +211,22 @@ public class DataGenerator  {
             }
             setOfIndexes.add(randomInteger);
         }
+        ArrayList<String> output = new ArrayList<>();
         for (Integer index : setOfIndexes) {
             output.add(lookUpList.get(index));
         }
+
         return output;
     }
 
-    private String getRandomStringFromLocalizedCharset(String length, String charSet) {
-        int lengthInt = Integer.parseInt(length);
-        String output = "";
+    private String getRandomStringFromLocalizedCharset(int length, String charSet) {
         Random randomGenerator = new Random();
-        for (int i = 0; i < lengthInt; i++) {
+        StringBuilder output = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
             int charIndex = randomGenerator.nextInt(charSet.length());
-            output = output + charSet.charAt(charIndex);
+            output.append(charSet.charAt(charIndex));
         }
-        return output;
+        return output.toString();
     }
 
     private String getRandomUser(ArrayList<String> userList) {
