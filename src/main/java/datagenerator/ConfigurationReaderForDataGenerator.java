@@ -17,6 +17,7 @@ import java.util.HashMap;
 public class ConfigurationReaderForDataGenerator {
 
     public static final String DATAGENERATOR_CUSTOMIZATION_XML = "dataGenerator_customization.xml";
+
     private HashMap<String, String> localizationCharSetsMap = new HashMap<>();
     private HashMap<String, Object> dataGeneratorConfigurationMap = new HashMap<>();
     private HashMap<String, ArrayList<HashMap<String, String>>> projectEntitiesMapsList = new HashMap<String, ArrayList<HashMap<String, String>>>();

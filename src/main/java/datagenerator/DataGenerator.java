@@ -11,7 +11,20 @@ import java.util.*;
 
 /**
  * Created by Yaroslav Lyashenko on 1/12/2015.
+ *
+ *
+ How to use DataGenerator:
+
+ DataGenerator generator = new DataGenerator(new ConfigurationReaderForDataGenerator(ConfigurationReaderForDataGenerator.DATAGENERATOR_CUSTOMIZATION_XML));
+
+ System.out.println(generator.generateStringInJsonFormatForRequiredOlnyFields(1,EntityType.DEFECT_ENTITY,LocalizationLanguage.ENGLISH));
+ System.out.println(generator.generateStringInJsonFormatForAllFields(1, EntityType.DEFECT_ENTITY, LocalizationLanguage.GERMAN));
+ System.out.println(generator.generateStringInJsonFormatForRequiredOlnyFields(20, EntityType.DEFECT_ENTITY, LocalizationLanguage.RUSSIAN));
+ System.out.println(generator.generateStringInJsonFormatForAllFields(20, EntityType.DEFECT_ENTITY,LocalizationLanguage.GERMAN));
+
  */
+
+
 public class DataGenerator implements EntityType, LocalizationLanguage {
 
     private HashMap<String, String> localizationCharSetsMap;

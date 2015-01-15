@@ -6,15 +6,21 @@
     <max_integer>2147483647</max_integer>
     <localization language="English">
         <language>English</language>
-        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~</characters_set>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
+            `abcdefghijklmnopqrstuvwxyz{|}~
+        </characters_set>
     </localization>
     <localization language="German">
         <language>German</language>
-        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÄÉÖÜßäéöü</characters_set>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
+            `abcdefghijklmnopqrstuvwxyz{|}~ÄÉÖÜßäéöü
+        </characters_set>
     </localization>
     <localization language="Russian">
         <language>Russian</language>
-        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?[\]^_`{|}~№АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя</characters_set>
+        <characters_set>!&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?[\]^_`{|}~№АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+            абвгдеёжзийклмнопрстуфхцчшщъыьэюя
+        </characters_set>
     </localization>
     <project_user_list>dataGenerator_metadata/projectUsers.xml</project_user_list>
     <project_lists>dataGenerator_metadata/projectLists.xml</project_lists>
